@@ -1,51 +1,24 @@
 # pyaxengine_axcl_test
 
-
-### Problem Description
-
-
-
-
-
 ## Environment
+- Hardware: Raspberry Pi 5 + Xinjian M.2 Accelerator Card (AX650N)
+- Software: pyaxengine-0.1.2 (axengine-0.1.2-py3-none-any.whl)
+- AXCL-SMI: V2.25.0_20250117163029
 
-・Device: Raspberry Pi 5 + Xinjian M.2 Accelerator Card（AX650N）<br>
-・pyaxengine: axengine-0.1.2 (axengine-0.1.2-py3-none-any.whl)<br>
-・AXCL-SMI: V2.25.0_20250117163029 <br>
+## Problem Description
+The issue occurs when trying to run inference with a MobileNetV2 model (torch_vision_mobilenet_v2.axmodel) using the AX650N accelerator:
 
-```
-raspi5$  cat /proc/device-tree/model
-Raspberry Pi 5 Model B Rev 1.0(myenv)
+1. The output name from the model is displayed as a C-style pointer (`<cdata 'char *' 0x26333140>`) instead of a proper Python string.
 
-raspi5$ lsb_release -a
-No LSB modules are available.
-Distributor ID: Debian
-Description:    Debian GNU/Linux 12 (bookworm)
-Release:        12
-Codename:       bookworm
-
-raspi5$ uname -a
-Linux raspi5 6.6.74+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.6.74-1+rpt1 (2025-01-27) aarch64 GNU/Linux
-
-raspi5$ axcl-smi
-+------------------------------------------------------------------------------------------------+
-| AXCL-SMI  V2.25.0_20250117163029                                Driver  V2.25.0_20250117163029 |
-+-----------------------------------------+--------------+---------------------------------------+
-| Card  Name                     Firmware | Bus-Id       |                          Memory-Usage |
-| Fan   Temp                Pwr:Usage/Cap | CPU      NPU |                             CMM-Usage |
-|=========================================+==============+=======================================|
-|    0  AX650N                    V2.25.0 | 0000:01:00.0 |                150 MiB /      945 MiB |
-|   --   67C                      -- / -- | 1%        0% |                 18 MiB /     2944 MiB |
-+-----------------------------------------+--------------+---------------------------------------+
-
-+------------------------------------------------------------------------------------------------+
-| Processes:                                                                                     |
-| Card      PID  Process Name                                                   NPU Memory Usage |
-|================================================================================================|
-```
+2. When executing `session.run(None, input_feed={"input": img})[0]`, the following error occurs:
+   ```
+   AttributeError: cdata 'void *' has no attribute 'pOutputs'
+   ```
 
 ### Steps to reproduce
 
+I put it here.
+https://github.com/nnn112358/pyaxengine_axcl_test
 
 ```
 $ python infer_axmodel.py
@@ -125,5 +98,24 @@ if __name__ == "__main__":
 This figure shows torch_vision_mobilenet_v2.axmodel opened in nectron.
 ![image](https://github.com/user-attachments/assets/cc0df3d6-6cb6-40f3-9f31-96ea0ade727f)
 
-I put it here.
-https://github.com/nnn112358/pyaxengine_axcl_test
+## Environment-Detail
+```
+raspi5$ axcl-smi
++------------------------------------------------------------------------------------------------+
+| AXCL-SMI  V2.25.0_20250117163029                                Driver  V2.25.0_20250117163029 |
++-----------------------------------------+--------------+---------------------------------------+
+| Card  Name                     Firmware | Bus-Id       |                          Memory-Usage |
+| Fan   Temp                Pwr:Usage/Cap | CPU      NPU |                             CMM-Usage |
+|=========================================+==============+=======================================|
+|    0  AX650N                    V2.25.0 | 0000:01:00.0 |                150 MiB /      945 MiB |
+|   --   67C                      -- / -- | 1%        0% |                 18 MiB /     2944 MiB |
++-----------------------------------------+--------------+---------------------------------------+
+
++------------------------------------------------------------------------------------------------+
+| Processes:                                                                                     |
+| Card      PID  Process Name                                                   NPU Memory Usage |
+|================================================================================================|
+```
+
+
+
