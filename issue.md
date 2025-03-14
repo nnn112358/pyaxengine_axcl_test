@@ -20,6 +20,9 @@ The issue occurs when trying to run inference with a MobileNetV2 model (torch_vi
 I put it here.
 https://github.com/nnn112358/pyaxengine_axcl_test
 
+The root cause likely stems from the pyaxengine library not properly converting C/C++ pointers to Python strings, or there's an issue with how output names are processed in the Python wrapper for the AXCL runtime.
+This appears to be an integration issue between the Python wrapper and the underlying C/C++ implementation of the inference engine.
+
 ```
 $ python infer_axmodel.py
 [INFO] Available providers:  ['AXCLRTExecutionProvider']
