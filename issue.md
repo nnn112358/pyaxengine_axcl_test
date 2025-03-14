@@ -20,8 +20,9 @@ The issue occurs when trying to run inference with a MobileNetV2 model (torch_vi
 I put it here.
 https://github.com/nnn112358/pyaxengine_axcl_test
 
-The root cause likely stems from the pyaxengine library not properly converting C/C++ pointers to Python strings, or there's an issue with how output names are processed in the Python wrapper for the AXCL runtime.
-This appears to be an integration issue between the Python wrapper and the underlying C/C++ implementation of the inference engine.
+Input is correctly recognized: name=input, shape=[1, 224, 224, 3]
+Output shape is correct [1, 1000], but the name is problematic
+The model can be opened in Netron, but there appears to be an issue with how the output layer is recognized or handled.
 
 ```
 $ python infer_axmodel.py
